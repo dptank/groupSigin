@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"groupSigin/pkg/ex"
 	"fmt"
+	"groupSigin/pkg/validation"
 )
 /**
 根据id获取详情
@@ -49,7 +50,33 @@ func AddInfo(ctx *gin.Context)  {
 	//保存活动信息
 	errs := pinActivityService.AddActivityInfo(&activityInfo)
 	if errs!=nil {
-		app.Response(http.StatusBadRequest,ex.ERROR_ADD_FAIL,false,"添加失败")
+		app.Response(http.StatusBadRequest,ex.ERROR_ADD_FAIL,false,"")
+		return
+	}
+	app.Response(http.StatusOK,ex.SUCCESS,true,"")
+}
+/**
+修改活动信息
+*/
+func UpdateInfo(ctx *gin.Context) {
+	app := app.Gin{C:ctx}
+	valid := validation.Validation{}
+	var activityInfo pinActivityService.ActivityInfo
+	err := ctx.BindJSON(&activityInfo)
+	if err!=nil {
+		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,"")
+		return
+	}
+	//校验id
+	if v := valid.Required(activityInfo.Id,"id").Message("不能为空！");!v.Ok {
+		msg := v.Error.Key + " " + v.Error.Message
+		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,msg)
+		return
+	}
+	//保存活动信息
+	errs := pinActivityService.UpdateActivityInfo(&activityInfo)
+	if errs!=nil {
+		app.Response(http.StatusBadRequest,ex.ERROR_ADD_FAIL,false,errs.Error())
 		return
 	}
 	app.Response(http.StatusOK,ex.SUCCESS,true,"")

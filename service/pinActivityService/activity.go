@@ -4,6 +4,7 @@ import (
 	"groupSigin/models"
 	"fmt"
 	"time"
+	"github.com/pkg/errors"
 )
 type ActivityInfo struct {
 	Id int `json:"id"`
@@ -60,5 +61,31 @@ func AddActivityInfo(pa *ActivityInfo) error{
 	ob.UpdatedAt = nowData
 	//添加
 	err := ob.PinActivityAdd()
+	return err
+}
+/**
+活动信息修改
+*/
+func UpdateActivityInfo(pa *ActivityInfo) error {
+	var ob models.PinActivity
+	//查询信息
+	res := ob.GetActivityInfo(pa.Id)
+	if res.ID==0 {
+		return errors.New("信息不存在")
+	}
+	res.Title = pa.Title
+	res.CountLimit = pa.CountLimit
+	res.OwnerPrice = pa.OwnerPrice
+	res.MemberPrice = pa.MemberPrice
+	res.PriceType = pa.PriceType
+	res.StartTime = pa.StartTime
+	res.EndTime = pa.EndTime
+	res.Status = pa.Status
+	res.Stock = pa.Stock
+	res.Img = pa.Img
+	nowData := time.Now().Local()
+	res.UpdatedAt = nowData
+	//添加
+	err := ob.PinActivityUpdate()
 	return err
 }

@@ -43,3 +43,18 @@ func (pa *PinActivity) PinActivityAdd() error {
 	}
 	return nil
 }
+/**
+修改活动信息
+*/
+func (pa *PinActivity) PinActivityUpdate() error {
+	if err := db.conn("write").Save(pa).Error; err != nil {
+		return err
+	}
+	return nil
+}
+//func (u *PinActivity) AfterCreate() (err error) {
+//	if (u.ID > 10) {
+//		err = errors.New("user id is already greater than 1000")
+//	}
+//	return
+//}

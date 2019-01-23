@@ -13,10 +13,12 @@ func InitRoute() *gin.Engine{
 	//后台路由
 	admin := router.Group("/admin/")
 	{
-		//获取信息
+		//获取活动信息
 		admin.POST("activity/info", activity.Info)
-		admin.POST("activity/one", activity.GetInfo)
+		//添加活动信息
 		admin.POST("activity/add", activity.AddInfo)
+		//修改活动信息
+		admin.POST("activity/update", activity.UpdateInfo)
 	}
 	return router
 }
