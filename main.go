@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/gin-gonic/gin"
+	"groupSigin/pkg/gredis"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 		fmt.Printf("Fail to read file: %v", err)
 		os.Exit(1)
 	}
+	//初始化链接池
+	gredis.SetUpRedis()
 	// 运行模式
 	mode := cfg.Section("").Key("app_mode").String()
 	if mode == "develop" {
