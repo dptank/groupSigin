@@ -2,7 +2,6 @@ package pinActivityService
 
 import (
 	"groupSigin/models"
-	"fmt"
 	"time"
 	"github.com/pkg/errors"
 )
@@ -37,8 +36,6 @@ func GetInfo(id int) (res ActivityInfo){
 	result.EndTime = info.EndTime
 	result.Stock = info.Stock
 	result.Status = info.Status
-	fmt.Println(result)
-	//fmt.Println(info)
 	return result
 }
 /**

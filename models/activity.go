@@ -2,7 +2,6 @@ package models
 
 import (
 	"time"
-	"fmt"
 )
 
 type PinActivity struct {
@@ -30,7 +29,6 @@ func (PinActivity) TableName() string {
 根据id获取详情
 */
 func (pa *PinActivity) GetActivityInfo(activityId int) *PinActivity {
-	fmt.Println(activityId)
 	db.conn("read").Where(&PinActivity{ID: activityId}).First(pa)
 	return pa
 }

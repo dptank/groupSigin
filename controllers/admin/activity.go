@@ -1,4 +1,4 @@
-package activity
+package admin
 
 import (
 	"github.com/gin-gonic/gin"
@@ -14,6 +14,7 @@ import (
 根据id获取详情
 */
 func Info(ctx *gin.Context) {
+	//ctx.Abort()
 	app := app.Gin{C:ctx}
 	id ,_ := strconv.Atoi(ctx.Query("id"))
 	//判断信息
