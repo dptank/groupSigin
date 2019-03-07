@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	app2 "groupSigin/pkg/app"
 	"net/http"
+	"fmt"
 )
 /**
 token解析
@@ -19,6 +20,7 @@ func JWTAuth() gin.HandlerFunc{
 		}
 		token, err := jwt.Parse(tokenString,secret())
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			fmt.Println(claims)
 			ctx.Set("claims", claims)
 		} else {
 			app.Response(http.StatusBadRequest,500,false,err)
@@ -32,7 +34,7 @@ token 秘钥
 */
 func secret()jwt.Keyfunc{
 	return func(token *jwt.Token) (interface{}, error) {
-		return []byte(""),nil
+		return []byte("miyao"),nil
 	}
 }
 

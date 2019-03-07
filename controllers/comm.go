@@ -3,6 +3,8 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
+	"net/http"
+	"fmt"
 )
 
 type UserInfo struct {
@@ -26,4 +28,14 @@ func GetTokenInfo(ctx *gin.Context) *UserInfo {
 	info.Env = claims["env"].(string)
 	info.Platform = claims["platform"].(string)
 	return &info
+}
+/**
+http get 请求
+*/
+func HttpGet(url string) (r *http.Response, e error) {
+	resp ,err := http.Get(url)
+	if err !=nil {
+		fmt.Println(err.Error())
+	}
+	return resp ,nil
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 	"encoding/json"
+	"fmt"
 )
 //连接池
 var RedisConn *redis.Pool
@@ -26,7 +27,6 @@ func SetUpRedis() error {
 	maxIdleConns, _ := cfg.Section(mode).Key("redis.max_idle_conns").Int()
 	maxOpenConns, _ := cfg.Section(mode).Key("redis.max_open_conns").Int()
 	maxTimeOut ,_:= cfg.Section(mode).Key("redis.max_idle_timeout").Int()
-
 	RedisConn = &redis.Pool{
 		MaxIdle:     maxIdleConns,
 		MaxActive:   maxOpenConns,
@@ -36,12 +36,13 @@ func SetUpRedis() error {
 			if err != nil {
 				return nil, err
 			}
-			return c, err
 			if pwd != "" {
 				if _,err := c.Do("AUTH",pwd);err !=nil {
+
 					c.Close()
 					return nil,err
 				}
+				fmt.Println(c)
 			}
 			return c,err
 		},
@@ -56,9 +57,11 @@ func SetUpRedis() error {
 set 值
 */
 func Set(key string, data interface{}, time int) error{
+
 	conn := RedisConn.Get()
 	defer conn.Close()
 	value,err := json.Marshal(data)
+	//fmt.Println(value)
 	if err !=nil {
 		return err
 	}

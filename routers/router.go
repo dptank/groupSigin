@@ -12,6 +12,7 @@ import (
 */
 func InitRoute() *gin.Engine{
 	router := gin.Default()
+	//router.POST("info", pinActivity.Info)
 	//后台路由
 	admins := router.Group("/admin/")
 	{
