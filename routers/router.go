@@ -5,6 +5,7 @@ import (
 	"groupSigin/middleware/jwt"
 	"groupSigin/controllers/admin"
 	"groupSigin/controllers/activity"
+	"groupSigin/controllers/test"
 )
 
 /**
@@ -12,7 +13,6 @@ import (
 */
 func InitRoute() *gin.Engine{
 	router := gin.Default()
-	//router.POST("info", pinActivity.Info)
 	//后台路由
 	admins := router.Group("/admin/")
 	{
@@ -26,6 +26,16 @@ func InitRoute() *gin.Engine{
 	//前端路由
 	authorized := router.Group("/activity",jwtauth.JWTAuth())
 	authorized.POST("info", pinActivity.Info)
-
+	//日志测试
+	log := router.Group("log")
+	{
+		log.POST("test",test.TestLog)
+	}
+	//kafka测试
+	kafka := router.Group("kafka")
+	{
+		kafka.POST("produce",test.KafkaTest)
+		kafka.POST("consoumer",test.KafkaConsoumer)
+	}
 	return router
 }
