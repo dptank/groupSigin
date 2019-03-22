@@ -5,6 +5,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
 	"fmt"
+	"io/ioutil"
+	"io"
 )
 
 type UserInfo struct {
@@ -38,4 +40,17 @@ func HttpGet(url string) (r *http.Response, e error) {
 		fmt.Println(err.Error())
 	}
 	return resp ,nil
+}
+/**
+http post 请求
+*/
+func HttpPost(url string,data io.Reader) (res []byte, e error) {
+	resp ,err := http.Post(url,"application/json;charset=UTF-8",data)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	//fmt.Println(body)
+	return body, nil
 }

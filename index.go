@@ -1,4 +1,75 @@
 package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"bytes"
+	"io"
+	"net/http"
+	"io/ioutil"
+)
+
+func main() {
+	url := "http://jiapeng.express.com/api/service/glove/list"
+	song := make(map[string]interface{})
+	song["mailNo"] = "251602300981"
+	song["reqNo"] = "SF5BF7F60A39A2E"
+	bytesData, err := json.Marshal(song)
+	//fmt.Println(bytesData)
+	if err != nil {
+		fmt.Println(err.Error() )
+		return
+	}
+
+	reader := bytes.NewReader(bytesData)
+	res,err := HttpPost(url,reader)
+	var user map[string]interface{}
+	json.Unmarshal(res, &user)
+	data := user["data"].(map[string]interface{})
+	//list  := (data["list"]).(map[string]interface{})
+	fmt.Printf("%T %+v", data, data)
+	//for key,value := range list{
+	//	fmt.Println(value)
+	//	fmt.Println(key)
+	//}
+	//str := (*string)(unsafe.Pointer(&res))
+	//s := make(map[string]interface{})
+	//fmt.Println(data)
+}
+func HttpPost(url string,data io.Reader) (res []byte, e error) {
+	request, err := http.NewRequest("POST", url, data)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	client := http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	//byte数组直接转成string，优化内存
+	//str := (*string)(unsafe.Pointer(&respBytes))
+	//fmt.Println(*str)
+	return respBytes ,nil
+	//resp ,err := http.Post(url,"application/json;charset=UTF-8",data)
+	//fmt.Println(err)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	panic(err)
+	//}
+	//defer resp.Body.Close()
+	//body, _ := ioutil.ReadAll(resp.Body)
+	//fmt.Println(body)
+	//return body, nil
+}
 //
 //import (
 //	"fmt"
