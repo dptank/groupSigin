@@ -1,33 +1,36 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"bytes"
 	"io"
 	"net/http"
 	"io/ioutil"
+	"math"
 )
 
 func main() {
-	url := "http://jiapeng.express.com/api/service/glove/list"
-	song := make(map[string]interface{})
-	song["mailNo"] = "251602300981"
-	song["reqNo"] = "SF5BF7F60A39A2E"
-	bytesData, err := json.Marshal(song)
-	//fmt.Println(bytesData)
-	if err != nil {
-		fmt.Println(err.Error() )
-		return
-	}
-
-	reader := bytes.NewReader(bytesData)
-	res,err := HttpPost(url,reader)
-	var user map[string]interface{}
-	json.Unmarshal(res, &user)
-	data := user["data"].(map[string]interface{})
-	//list  := (data["list"]).(map[string]interface{})
-	fmt.Printf("%T %+v", data, data)
+	 count := 103
+	pagesize := 20
+	//a := math.Floor(float64(count/pagesize))
+	fmt.Println(math.Ceil(float64(count)/float64(pagesize)))
+	//url := "http://jiapeng.express.com/api/service/glove/list"
+	//song := make(map[string]interface{})
+	//song["mailNo"] = "251602300981"
+	//song["reqNo"] = "SF5BF7F60A39A2E"
+	//bytesData, err := json.Marshal(song)
+	////fmt.Println(bytesData)
+	//if err != nil {
+	//	fmt.Println(err.Error() )
+	//	return
+	//}
+	//
+	//reader := bytes.NewReader(bytesData)
+	//res,err := HttpPost(url,reader)
+	//var user map[string]interface{}
+	//json.Unmarshal(res, &user)
+	//data := user["data"].(map[string]interface{})
+	////list  := (data["list"]).(map[string]interface{})
+	//fmt.Printf("%T %+v", data, data)
 	//for key,value := range list{
 	//	fmt.Println(value)
 	//	fmt.Println(key)

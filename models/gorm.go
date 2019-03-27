@@ -74,6 +74,7 @@ func (conns *dbconnect) conn(str string) *gorm.DB{
 	orm.DB().SetMaxIdleConns(maxIdleConns)
 	orm.DB().SetMaxOpenConns(maxOpenConns)
 	orm.DB().SetConnMaxLifetime(time.Hour)
+	orm.LogMode(true)
 	conns.dbs[str] = orm
 	return orm
 }

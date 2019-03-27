@@ -22,10 +22,19 @@ func InitRoute() *gin.Engine{
 		admins.POST("activity/add", admin.AddInfo)
 		//修改活动信息
 		admins.POST("activity/update", admin.UpdateInfo)
+		//送礼活动
+		admins.POST("climbStairs/save", admin.SaveClimbStairs)
+		admins.POST("climbStairs/info", admin.GetClimbStairsInfo)
+		admins.POST("climbStairs/list", admin.GetClimbStairsList)
+		admins.POST("climbStairs/item/save", admin.SaveClimbStairsItem)
+
 	}
+	//送礼活动前端
 	//前端路由
 	authorized := router.Group("/activity",jwtauth.JWTAuth())
-	authorized.POST("info", pinActivity.Info)
+	{
+		authorized.POST("info", pinActivity.Info)
+	}
 	//日志测试
 	log := router.Group("log")
 	{
