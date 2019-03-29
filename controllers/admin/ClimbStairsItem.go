@@ -47,7 +47,7 @@ func GetClimbStairsItemInfo(ctx *gin.Context)  {
 		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
 		return
 	}
-	if sl.Id==0 {
+	if sl.Id<=0 {
 		app.Response(http.StatusBadRequest,500,false,"信息不存在")
 		return
 	}
@@ -66,7 +66,6 @@ func GetClimbStairsItemList(ctx *gin.Context) {
 		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
 		return
 	}
-
 	if sl.PageNum==0 {
 		sl.PageNum=1
 	}

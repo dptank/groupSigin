@@ -45,8 +45,8 @@ func (csi *ClimbStairsItem) SaveClimbStairsItem()error {
 func (csi *ClimbStairsItem) GetClimbStairsItemList(pageNum int64, pageSize int64, maps interface{})([]*ClimbStairsItem, int64){
 	var climbStairsItem []*ClimbStairsItem
 	var count int64
-	offet := (pageNum-1)*pageSize
-	err := db.conn("read").Where(maps).Offset(offet).Limit(pageSize).Find(&climbStairsItem).Error
+	offets := (pageNum-1)*pageSize
+	err := db.conn("read").Where(maps).Offset(offets).Limit(pageSize).Find(&climbStairsItem).Error
 	if err != nil {
 		return nil ,0
 	}
