@@ -26,8 +26,10 @@ func InitRoute() *gin.Engine{
 		admins.POST("climbStairs/save", admin.SaveClimbStairs)
 		admins.POST("climbStairs/info", admin.GetClimbStairsInfo)
 		admins.POST("climbStairs/list", admin.GetClimbStairsList)
+		//送礼活动商品
 		admins.POST("climbStairs/item/save", admin.SaveClimbStairsItem)
-
+		admins.POST("climbStairs/item/info", admin.GetClimbStairsItemInfo)
+		admins.POST("climbStairs/item/list", admin.GetClimbStairsItemList)
 	}
 	//送礼活动前端
 	//前端路由

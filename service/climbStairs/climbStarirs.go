@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"math"
 )
-
+//活动规则
 type ClimbStairsInfo struct {
 	Id int64 `json:"id"`
-	Rule string `json:"Rule" binding:"required"`
+	Rule string `json:"rule" binding:"required"`
 	Title string `json:"title" binding:"required"`
 	Status int `json:"status"`
 	BgColor string `json:"bgColor" binding:"required"`
@@ -58,21 +58,22 @@ func SaveClimbStairs(ob *ClimbStairsInfo) error {
 /**
 获取详细信息
 */
-func GetClimbStairsInfo(id int64) map[string]interface{}{
-	info := make(map[string]interface{})
+func GetClimbStairsInfo(id int64) *ClimbStairsInfo{
 	var climbStairs models.ClimbStairs
 	res := climbStairs.GetInfoClimbStairsById(id)
 	if res.Id==0 {
 		return nil
 	}
-	info["id"] = res.Id
-	info["rule"] = res.Rule
-	info["title"] = res.Title
-	info["status"] = res.Status
-	info["bgColor"] = res.BgColor
-	info["pageHeadImg"] = res.PageHeadImg
-	info["startTime"] = res.StartTime
-	info["endTime"] = res.EndTime
+	info := &ClimbStairsInfo{
+		Id:res.Id,
+		Rule:res.Rule,
+		Title:res.Title,
+		Status:res.Status,
+		BgColor:res.BgColor,
+		PageHeadImg:res.PageHeadImg,
+		StartTime:res.StartTime.Format("2006-01-02 15:04:05"),
+		EndTime:res.EndTime.Format("2006-01-02 15:04:05"),
+	}
 	return info
 }
 /**
@@ -85,7 +86,20 @@ func GetClimbStairsList(cs *SelectStairs) map[string]interface{}{
 	maps["status"] = 1
 	fmt.Println(cs)
 	res ,count := climbStairs.GetInfoClimbStairsList(cs.PageNum,cs.PageSize,maps)
-	info["list"] = res
+	var list []*ClimbStairsInfo
+	for _,value := range res{
+		list=append(list,&ClimbStairsInfo{
+			Id:value.Id,
+			Rule:value.Rule,
+			Title:value.Title,
+			Status:value.Status,
+			BgColor:value.BgColor,
+			PageHeadImg:value.PageHeadImg,
+			StartTime:value.StartTime.Format("2006-01-02 15:04:05"),
+			EndTime:value.EndTime.Format("2006-01-02 15:04:05"),
+		})
+	}
+	info["list"] = list
 	info["totalCount"] = count
 	info["pageSize"] = cs.PageSize
 	info["pageNum"] = cs.PageNum
