@@ -8,7 +8,14 @@ import (
 	"io/ioutil"
 	"io"
 )
-
+type ResErr struct {
+	Em string `json:"em"`
+	Ec int64  `json:"ec"`
+}
+type Res struct {
+	Err  ResErr `json:"err"`
+	Success bool `json:"success"`
+}
 type UserInfo struct {
 	UserId string `json:"userId"`
 	OpenId string `json:"openId"`
@@ -34,23 +41,25 @@ func GetTokenInfo(ctx *gin.Context) *UserInfo {
 /**
 http get 请求
 */
-func HttpGet(url string) (r *http.Response, e error) {
+func HttpGet(url string) (res []byte, e error) {
 	resp ,err := http.Get(url)
 	if err !=nil {
 		fmt.Println(err.Error())
 	}
-	return resp ,nil
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return body, nil
 }
 /**
 http post 请求
 */
 func HttpPost(url string,data io.Reader) (res []byte, e error) {
+	fmt.Printf("%s\n", data)
 	resp ,err := http.Post(url,"application/json;charset=UTF-8",data)
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	//fmt.Println(body)
 	return body, nil
 }

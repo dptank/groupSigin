@@ -4,31 +4,88 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	app2 "groupSigin/pkg/app"
-	"groupSigin/pkg/ginlog"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/bsm/sarama-cluster"
 	"os"
 	"os/signal"
 	"groupSigin/pkg/gokafka"
+	"encoding/json"
+	"bytes"
+	"log"
+	"io/ioutil"
 )
 
-type TestLogs struct {
-	UserName string `json:"user_name"`
-	UserAddr string `json:"user_addr"`
-	UserTel int64 `json:"user_tel"`
+//type TestLogs struct {
+//	UserName string `json:"user_name"`
+//	UserAddr string `json:"user_addr"`
+//	UserTel int64 `json:"user_tel"`
+//}
+type Activity struct {
+	Rule string
+	Title string
+	BgColor string
+	PageHeadImg string
+	StartTime string
+	EndTime string
+}
+type err struct {
+	Em string `json:"em"`
+	Ec int64  `json:"ec"`
+}
+type res struct {
+	Data resList `json:"data"`
+	Err  err `json:"err"`
+	Success bool `json:"success"`
+}
+type resList struct {
+	List []*ClimbStairsInfo `json:"list"`
+	PageNum int64 `json:"pageNum"`
+	PageSize int64 `json:"pageSize"`
+	TotalCount int64 `json:"totalCount"`
+	TotalPage int64 `json:"totalPage"`
+}
+type ClimbStairsInfo struct {
+	Id int64 `json:"id"`
+	Rule string `json:"rule"`
+	Title string `json:"title"`
+	//Status int `json:"status"`
+	//BgColor string `json:"bgColor"`
+	//PageHeadImg string `json:"pageHeadImg"`
+	//StartTime string `json:"startTime"`
+	//EndTime string `json:"endTime"`
 }
 /**
 基础用法
 */
 func TestLog(ctx *gin.Context)  {
 	app := app2.Gin{C:ctx}
-	test := TestLogs{UserName:"cesi",UserAddr:"ceshi2",UserTel:18734922837}
+	//test := TestLogs{UserName:"cesi",UserAddr:"ceshi2",UserTel:18734922837}
+	test := Activity{Rule:"ceshi",Title:"ddd",BgColor:"1111",PageHeadImg:"ceshi",StartTime:"2018-09-10 10:10:10",EndTime:"2018-09-10 10:10:10"}
 	//test := "我的日志"
-	//a ,_ := json.Marshal(test)
-	ginlog.LogPrint("TestLogs的值：",test)
-	ginlog.LogPrint("TestLogs的值：","我的测试")
-	app.Response(http.StatusBadRequest,200,true,"日志存入成功")
+	data ,_ := json.Marshal(test)
+	body := bytes.NewReader(data)
+	url := "http://127.0.0.1:8016/admin/climbStairs/list"
+	contentType := "application/json;charset=utf-8"
+	resp, err := http.Post(url, contentType, body)
+	if err != nil {
+		log.Println("Post failed:", err)
+		return
+	}
+	defer resp.Body.Close()
+	content, err := ioutil.ReadAll(resp.Body)
+
+	ress := &res{}
+	err = json.Unmarshal(content, ress)
+	for _,value := range ress.Data.List {
+		fmt.Println(value.Id)
+	}
+	fmt.Println(ress)
+	//str := (*string)(unsafe.Pointer(&content))
+	//fmt.Println(ress.data)
+	//res ,_ :=controllers.HttpPost("http://127.0.0.1:8016/admin/climbStairs/save",postData)
+	//fmt.Printf("%s\n",res)
+	app.Response(http.StatusBadRequest,200,true,ress)
 	return
 }
 /**

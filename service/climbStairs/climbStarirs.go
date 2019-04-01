@@ -3,7 +3,6 @@ package climbStairs
 import (
 	"groupSigin/models"
 	"time"
-	"fmt"
 	"math"
 )
 //活动规则
@@ -84,7 +83,7 @@ func GetClimbStairsList(cs *SelectStairs) map[string]interface{}{
 	var climbStairs models.ClimbStairs
 	maps := make(map[string]interface{})
 	maps["status"] = 1
-	fmt.Println(cs)
+	//fmt.Println(cs)
 	res ,count := climbStairs.GetInfoClimbStairsList(cs.PageNum,cs.PageSize,maps)
 	var list []*ClimbStairsInfo
 	for _,value := range res{

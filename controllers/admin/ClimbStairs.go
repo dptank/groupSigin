@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"groupSigin/pkg/ex"
 	"groupSigin/pkg/ginlog"
-	"fmt"
 )
 
 /*
@@ -65,11 +64,9 @@ func GetClimbStairsList(ctx *gin.Context) {
 		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
 		return
 	}
-
 	if cs.PageNum==0 {
 		cs.PageNum=1
 	}
-	fmt.Println(cs.PageNum)
 	if cs.PageSize==0 {
 		cs.PageSize=10
 	}
