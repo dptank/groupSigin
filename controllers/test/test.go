@@ -13,7 +13,8 @@ import (
 	"encoding/json"
 	"bytes"
 	"log"
-	"io/ioutil"
+	"groupSigin/controllers"
+	"groupSigin/pkg/ex"
 )
 
 //type TestLogs struct {
@@ -55,6 +56,24 @@ type ClimbStairsInfo struct {
 	//StartTime string `json:"startTime"`
 	//EndTime string `json:"endTime"`
 }
+type TopicList struct {
+	TopicImage string `json:"topicImage"`
+	TopicTitle string `json:"topicTitle"`
+}
+
+func GetTopic(ctx *gin.Context) {
+	app:=app2.Gin{C:ctx}
+	topic := make(map[int]*TopicList)
+	for i:=1;i<5 ;i++  {
+		topic[1000+i] = &TopicList{
+			TopicTitle:"商品",
+			TopicImage:"https://static-cdn.xiangwushuo.com/publish/qw0gkz1544533447820436081",
+		}
+	}
+	var res = make(map[string]interface{})
+	res["list"] = topic
+	app.Response(http.StatusOK,ex.SUCCESS,true,res,"")
+}
 /**
 基础用法
 */
@@ -66,15 +85,19 @@ func TestLog(ctx *gin.Context)  {
 	data ,_ := json.Marshal(test)
 	body := bytes.NewReader(data)
 	url := "http://127.0.0.1:8016/admin/climbStairs/list"
-	contentType := "application/json;charset=utf-8"
-	resp, err := http.Post(url, contentType, body)
+	//contentType := "application/json;charset=utf-8"
+	//resp, err := http.Post(url, contentType, body)
+	//if err != nil {
+	//	log.Println("Post failed:", err)
+	//	return
+	//}
+	//defer resp.Body.Close()
+	//content, err := ioutil.ReadAll(resp.Body)
+	content ,err := controllers.HttpPost(url,body)
 	if err != nil {
 		log.Println("Post failed:", err)
 		return
 	}
-	defer resp.Body.Close()
-	content, err := ioutil.ReadAll(resp.Body)
-
 	ress := &res{}
 	err = json.Unmarshal(content, ress)
 	for _,value := range ress.Data.List {
@@ -85,7 +108,7 @@ func TestLog(ctx *gin.Context)  {
 	//fmt.Println(ress.data)
 	//res ,_ :=controllers.HttpPost("http://127.0.0.1:8016/admin/climbStairs/save",postData)
 	//fmt.Printf("%s\n",res)
-	app.Response(http.StatusBadRequest,200,true,ress)
+	app.Response(http.StatusBadRequest,200,true,ress,"")
 	return
 }
 /**
@@ -123,7 +146,7 @@ func TestKafka(ctx *gin.Context){
 			fmt.Println("发送失败",err.Error())
 		}
 	//}
-	app.Response(http.StatusBadRequest,200,true,data)
+	app.Response(http.StatusBadRequest,200,true,data,"")
 	return
 }
 /**
@@ -161,7 +184,7 @@ func TestConsoumer(ctx *gin.Context) {
 			return
 		}
 	}
-	app.Response(http.StatusBadRequest,200,true,"")
+	app.Response(http.StatusBadRequest,200,true,"","")
 	return
 }
 /**
@@ -172,7 +195,7 @@ func KafkaTest(ctx *gin.Context) {
 	topics := "wwwww"
 	msg := "测试nihaoledd"
 	res := gokafka.SendToKafka(topics,msg)
-	app.Response(http.StatusBadRequest,200,true,res)
+	app.Response(http.StatusBadRequest,200,true,res,"")
 	return
 }
 /**
@@ -199,6 +222,6 @@ func KafkaConsoumer(ctx *gin.Context) {
 			return
 		}
 	}
-	app.Response(http.StatusBadRequest,200,true,"")
+	app.Response(http.StatusBadRequest,200,true,"","")
 	return
 }

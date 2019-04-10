@@ -45,6 +45,13 @@ func SaveClimbStairsItem(ob *ClimbStairsItemInfo) error{
 		res.UpdatedAt = nowData
 		return res.SaveClimbStairsItem()
 	}
+	maps := make(map[string]interface{})
+	maps["activity_id"] =  ob.ActivityId
+	maps["topic_id"] =  ob.TopicId
+	info := cls.GetClimbStairsItemInfo(maps)
+	if info.Id!=0 {
+		return errors.New("该商品已经存在该活动中，请勿重复添加！")
+	}
 	cls.ActivityId = ob.ActivityId
 	cls.NeedNum = ob.NeedNum
 	cls.TopicId = ob.TopicId
@@ -58,7 +65,9 @@ func SaveClimbStairsItem(ob *ClimbStairsItemInfo) error{
 */
 func GetClimbStairsItemInfo(id int64)  *ClimbStairsItemInfo {
 	var cls models.ClimbStairsItem
-	res := cls.GetClimbStairsItemInfo(id)
+	maps := make(map[string]interface{})
+	maps["id"] =  id
+	res := cls.GetClimbStairsItemInfo(maps)
 	if res.Id==0 {
 		return nil
 	}
@@ -71,6 +80,28 @@ func GetClimbStairsItemInfo(id int64)  *ClimbStairsItemInfo {
 		UpdatedAt:res.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 	return info
+}
+/**
+根据活动id获取活动商品
+*/
+func GetClimbStairsItemInfoByActId(activityId int64) []*ClimbStairsItemInfo {
+	var cls models.ClimbStairsItem
+	res := cls.GetClimbStairsItemInfoByActId(activityId)
+	if res==nil {
+		return nil
+	}
+	var list []*ClimbStairsItemInfo
+	for _,value := range res{
+		list=append(list,&ClimbStairsItemInfo{
+			Id:value.Id,
+			NeedNum:value.NeedNum,
+			TopicId:value.TopicId,
+			ActivityId:value.ActivityId,
+			CreatedAt:value.CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt:value.UpdatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+	return list
 }
 /**
 获取商品列表信息

@@ -4,6 +4,8 @@ import (
 	"groupSigin/models"
 	"time"
 	"math"
+	"fmt"
+	"groupSigin/service"
 )
 //活动规则
 type ClimbStairsInfo struct {
@@ -21,6 +23,28 @@ type SelectStairs struct {
 	PageNum int64 `json:"pageNum"`
 	PageSize int64 `json:"pageSize"`
 	Offset int64
+}
+//活动商品信息
+type ClimbStairsItems struct {
+	TopicId int64 `json:"topicId"`
+	NeedNum int64 `json:"needNum"`
+	TopicTitle string `json:"topicTitle"`
+	TopicImg string `json:"topicImg"`
+	ReceivedNum int64 `json:"receivedNum"`
+	DiffNum int64 `json:"diffNum"`
+}
+//首页返回值
+type ClimbStairsInit struct {
+	Id int64 `json:"id"`
+	Rule string `json:"rule" `
+	Title string `json:"title"`
+	Status int `json:"status"`
+	BgColor string `json:"bgColor"`
+	PageHeadImg string `json:"pageHeadImg"`
+	StartTime string `json:"startTime"`
+	EndTime string `json:"endTime"`
+	//Info *ClimbStairsInfo `json:"-"`
+	ItemInfo []*ClimbStairsItems `json:"itemInfo"`
 }
 /**
 添加信息
@@ -73,6 +97,7 @@ func GetClimbStairsInfo(id int64) *ClimbStairsInfo{
 		StartTime:res.StartTime.Format("2006-01-02 15:04:05"),
 		EndTime:res.EndTime.Format("2006-01-02 15:04:05"),
 	}
+
 	return info
 }
 /**
@@ -104,4 +129,45 @@ func GetClimbStairsList(cs *SelectStairs) map[string]interface{}{
 	info["pageNum"] = cs.PageNum
 	info["totalPage"] = math.Ceil(float64(count)/float64(cs.PageSize))
 	return info
+}
+/**
+初始化活动
+*/
+func GetClimbStairsInit(id int64) *ClimbStairsInit{
+	//活动信息
+	climbStairsInfo := GetClimbStairsInfo(id)
+	//商品信息
+	activityId := climbStairsInfo.Id
+	items := GetClimbStairsItemInfoByActId(activityId)
+	if items==nil {
+		return nil
+	}
+	var topic []int64
+	for _,value:=range items{
+		topic = append(topic,value.TopicId)
+	}
+	var climbStairsItemsList []*ClimbStairsItems
+	topics :=  service.GetTopicInfoByIds(topic)
+	//fmt.Println(topics[1001].TopicTitle)
+	for _,value:=range items{
+		fmt.Println(topics[int(value.TopicId)] )
+		climbStairsItemsList = append(climbStairsItemsList,&ClimbStairsItems{
+			TopicId:value.TopicId,
+			NeedNum:value.NeedNum,
+			TopicImg:topics[int(value.TopicId)].TopicImage,
+			TopicTitle:topics[int(value.TopicId)].TopicTitle,
+		})
+	}
+	indexInfo := &ClimbStairsInit{
+		Id:climbStairsInfo.Id,
+		Rule:climbStairsInfo.Rule,
+		Title:climbStairsInfo.Title,
+		Status:climbStairsInfo.Status,
+		BgColor:climbStairsInfo.BgColor,
+		PageHeadImg:climbStairsInfo.PageHeadImg,
+		StartTime:climbStairsInfo.StartTime,
+		EndTime:climbStairsInfo.EndTime,
+		ItemInfo:climbStairsItemsList,
+	}
+	return indexInfo
 }

@@ -7,4 +7,5 @@ const (
 	ERROR          = 500
 	INVALID_PARAMS = 400
 	ERROR_ADD_FAIL = 1001
+	ERROR_ID_FAIL = 1002
 )

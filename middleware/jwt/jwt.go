@@ -14,7 +14,7 @@ func JWTAuth() gin.HandlerFunc{
 		app := app2.Gin{C:ctx}
 		tokenString := ctx.Request.Header.Get("token")
 		if tokenString=="" {
-			app.Response(http.StatusBadRequest,500,false,"token为空")
+			app.Response(http.StatusBadRequest,500,false,"","token为空")
 			ctx.Abort()
 			return
 		}
@@ -23,7 +23,7 @@ func JWTAuth() gin.HandlerFunc{
 			fmt.Println(claims)
 			ctx.Set("claims", claims)
 		} else {
-			app.Response(http.StatusBadRequest,500,false,err)
+			app.Response(http.StatusBadRequest,500,false,"",err.Error())
 			ctx.Abort()
 			return
 		}
@@ -34,7 +34,7 @@ token 秘钥
 */
 func secret()jwt.Keyfunc{
 	return func(token *jwt.Token) (interface{}, error) {
-		return []byte("miyao"),nil
+		return []byte("ceshi"),nil
 	}
 }
 

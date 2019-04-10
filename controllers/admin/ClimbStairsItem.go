@@ -24,17 +24,17 @@ func SaveClimbStairsItem(ctx *gin.Context) {
 	var cls climbStairs.ClimbStairsItemInfo
 	err := ctx.BindJSON(&cls)
 	if err != nil {
-		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
+		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,"",err.Error())
 		return
 	}
 	errs := climbStairs.SaveClimbStairsItem(&cls)
 	//fmt.Println(errs.Error())
 	if errs!=nil {
 		ginlog.LogPrint(errs.Error())
-		app.Response(http.StatusBadRequest,ex.ERROR_ADD_FAIL,false,"")
+		app.Response(http.StatusBadRequest,ex.ERROR_ADD_FAIL,false,"",errs.Error())
 		return
 	}
-	app.Response(http.StatusOK, ex.SUCCESS,true,"")
+	app.Response(http.StatusOK, ex.SUCCESS,true,"","")
 }
 /**
 获取详细信息
@@ -44,16 +44,16 @@ func GetClimbStairsItemInfo(ctx *gin.Context)  {
 	var sl climbStairs.SelectStairsItem
 	err := ctx.BindJSON(&sl)
 	if err != nil {
-		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
+		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,"",err.Error())
 		return
 	}
 	if sl.Id<=0 {
-		app.Response(http.StatusBadRequest,500,false,"信息不存在")
+		app.Response(http.StatusBadRequest,500,false,"","信息不存在")
 		return
 	}
 	ginlog.LogPrint("主键",sl.Id)
 	res := climbStairs.GetClimbStairsItemInfo(sl.Id)
-	app.Response(http.StatusOK,ex.SUCCESS,true,res)
+	app.Response(http.StatusOK,ex.SUCCESS,true,res,"")
 }
 /**
 分页获取信息
@@ -63,7 +63,7 @@ func GetClimbStairsItemList(ctx *gin.Context) {
 	var sl climbStairs.SelectStairsItem
 	err := ctx.BindJSON(&sl)
 	if err != nil {
-		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,err.Error())
+		app.Response(http.StatusBadRequest,ex.INVALID_PARAMS,false,"",err.Error())
 		return
 	}
 	if sl.PageNum==0 {
@@ -74,5 +74,5 @@ func GetClimbStairsItemList(ctx *gin.Context) {
 		sl.PageSize=10
 	}
 	res := climbStairs.GetClimbStairsItemList(&sl)
-	app.Response(http.StatusOK,ex.SUCCESS,true,res)
+	app.Response(http.StatusOK,ex.SUCCESS,true,res,"")
 }

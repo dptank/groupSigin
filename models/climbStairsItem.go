@@ -25,9 +25,20 @@ func (ClimbStairsItem) TableName() string{
 /**
 根据id获取详情
 */
-func (csi *ClimbStairsItem) GetClimbStairsItemInfo(id int64) *ClimbStairsItem{
-	db.conn("read").Where(&ClimbStairsItem{Id:id}).First(csi)
+func (csi *ClimbStairsItem) GetClimbStairsItemInfo(maps interface{}) *ClimbStairsItem{
+	db.conn("read").Where(maps).First(csi)
 	return csi
+}
+/**
+根据actId获取详情
+*/
+func (csi *ClimbStairsItem) GetClimbStairsItemInfoByActId(actId int64) []*ClimbStairsItem{
+	var climbStairsItem []*ClimbStairsItem
+	err := db.conn("read").Where(&ClimbStairsItem{ActivityId:actId}).Find(&climbStairsItem).Error
+	if err != nil {
+		return nil
+	}
+	return climbStairsItem
 }
 /**
 保存更新活动商品

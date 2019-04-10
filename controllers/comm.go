@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"io"
+	"groupSigin/pkg/ginlog"
 )
 type ResErr struct {
 	Em string `json:"em"`
@@ -47,6 +48,11 @@ func HttpGet(url string) (res []byte, e error) {
 		fmt.Println(err.Error())
 	}
 	defer resp.Body.Close()
+	defer func() {
+		if err:=recover();err!=nil {
+			ginlog.LogPrint("get请求错误",err)
+		}
+	}()
 	body, _ := ioutil.ReadAll(resp.Body)
 	return body, nil
 }
@@ -54,11 +60,17 @@ func HttpGet(url string) (res []byte, e error) {
 http post 请求
 */
 func HttpPost(url string,data io.Reader) (res []byte, e error) {
-	fmt.Printf("%s\n", data)
+	//fmt.Printf("%s\n", data)
 	resp ,err := http.Post(url,"application/json;charset=UTF-8",data)
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() {
+		if err:=recover();err!=nil{
+			ginlog.LogPrint("post请求错误",err)
+		}
+	}()
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	return body, nil

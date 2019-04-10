@@ -16,12 +16,6 @@ func InitRoute() *gin.Engine{
 	//后台路由
 	admins := router.Group("/admin/")
 	{
-		//获取活动信息
-		admins.POST("activity/info", admin.Info)
-		//添加活动信息
-		admins.POST("activity/add", admin.AddInfo)
-		//修改活动信息
-		admins.POST("activity/update", admin.UpdateInfo)
 		//送礼活动
 		admins.POST("climbStairs/save", admin.SaveClimbStairs)
 		admins.POST("climbStairs/info", admin.GetClimbStairsInfo)
@@ -33,14 +27,15 @@ func InitRoute() *gin.Engine{
 	}
 	//送礼活动前端
 	//前端路由
-	authorized := router.Group("/activity",jwtauth.JWTAuth())
+	authorized := router.Group("/api/",jwtauth.JWTAuth())
 	{
-		authorized.POST("info", pinActivity.Info)
+		authorized.POST("climbStairs/index", activity.GetClimbStairsIndex)
 	}
 	//日志测试
 	log := router.Group("log")
 	{
 		log.POST("test",test.TestLog)
+		log.POST("topic",test.GetTopic)
 	}
 	//kafka测试
 	kafka := router.Group("kafka")
